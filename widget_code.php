@@ -33,7 +33,30 @@ class Portfolio_Popular_Widget extends WP_Widget {
 		return $instance;
 	}
 	public function widget( $args, $instance ) {
-		popular_poularity_list();
+			$args = array(
+		"posts_per_page" => 10,
+		"post_type" => "post",
+		"post_status" => "publish",
+		"meta_key" => "pop_post_views",
+		"orderby" => "meta_value_num",
+		"order" => "DESC"
+	);
+
+	// get the popular posts
+	$popular_list = new WP_Query($args);
+
+	if($popular_list -> have_posts()){
+		echo "<ul>";
+	}
+
+	// while there are posts remaining, loop through them, creatin list items
+	while ($popular_list -> have_posts()) : $popular_list -> the_post();
+		echo '<li><a href="'.get_permalink($post -> ID).'">'.the_title('','', false).'</a></li>';
+	endwhile;
+
+	if ($popular_list -> have_posts()){
+		echo '</ul>';
+	}
 	}
 }
 register_widget( 'Portfolio_Popular_Widget' );
